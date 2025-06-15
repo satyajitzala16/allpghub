@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #28a745;
+        }
+        .confirmation-message {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .details {
+            margin-bottom: 30px;
+        }
+        .details p {
+            font-size: 16px;
+        }
+        .btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Booking Confirmation</h1>
+        
+        <div class="confirmation-message">
+            <p>Thank you for your booking! Your payment has been successfully processed.</p>
+        </div>
+
+        {% comment %} <div class="details">
+            <p><strong>Booking Details:</strong></p>
+            <p><strong>Room Type:</strong> {{ room_type }}</p>
+            <p><strong>Amount Paid:</strong> ₹{{ amount }}</p>
+            <p><strong>Booking ID:</strong> {{ booking_id }}</p>
+            <p><strong>Payment Status:</strong> {{ payment_status }}</p>
+        </div> {% endcomment %}
+
+        <a href="{% url 'index' %}" class="btn">Return to Homepage</a>
+        <br>
+        <a href="{% url 'user_pdf' user.id %}">Download PDF</a>
+    </div>
+
+</body>
+</html>

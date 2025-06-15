@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PG Booking Form</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-group select, .form-group input, .form-group textarea {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-container">
+        <h2>PG Booking Form</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name" name="fullname" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" required>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option value="" disabled selected>Select your gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="prefer-not-to-say">Prefer not to say</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="room-type">Room Type</label>
+                        <select id="room-type" name="room_type" required>
+                            <option value="" disabled selected>Select Room Type</option>
+                            <option value="single sharing">Single Sharing</option>
+                            <option value="double sharing">Double Sharing</option>
+                            <option value="three sharing">Three Sharing</option>
+                            <option value="four sharing">Four Sharing</option>
+                            <option value="five sharing">Five Sharing</option>
+                            <option value="six sharing">Six Sharing</option>
+                            <option value="seven sharing">Seven Sharing</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="aadhaar-photo">Aadhaar Card Photo</label>
+                        <input type="file" id="aadhaar-photo" name="aadhaarphoto" accept="image/*" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="personal-photo">Personal Photo</label>
+                        <input type="file" id="personal-photo" name="personalphoto" accept="image/*" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Razorpay Payment Button -->
+            <button id="rzp-button" class="submit-btn">Pay Now</button>
+        </form>
+    </div>
+</div>
+
+{% comment %} <!-- Razorpay Integration Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "{{ RAZORPAY_KEY_ID }}", // Enter the Key ID generated from the Dashboard
+        "amount": "{{ multiplied_amount }}", // Amount in paise (passed from Django)
+        "currency": "INR",
+        "name": "PG Booking",
+        "description": "Room Booking Payment",
+        "order_id": "{{ order_id }}", // Order ID passed from Django
+        "handler": function (response) {
+            alert("Payment successful! Razorpay Payment ID: " + response.razorpay_payment_id);
+            window.location.href = "{% url 'payment-success' %}?payment_id=" + response.razorpay_payment_id;
+        },
+        "prefill": {
+            "name": "{{ user_profile.full_name }}",
+            "email": "{{ user_profile.email }}",
+            "contact": "{{ user_profile.phone_number }}"
+        },
+        "theme": {
+            "color": "#F37254"
+        }
+    };
+
+    var rzp1 = new Razorpay(options);
+
+    document.getElementById('rzp-button').onclick = function(e) {
+        rzp1.open();
+        e.preventDefault();
+    }
+</script> {% endcomment %}
+
+</body>
+</html>

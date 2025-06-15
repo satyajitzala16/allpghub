@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <title>Minimal login form Responsive Widget Template : W3Layouts</title>
+
+    <!-- Meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Google fonts -->
+    <link href="//fonts.googleapis.com/css?family=Nunito:400,700&display=swap" rel="stylesheet">
+
+    <!-- Internal CSS -->
+    <!-- CSS Stylesheet 
+        -->
+       <!-- CSS Stylesheet 
+        -->
+    <link rel="stylesheet" href= {% static "CSS/jp.css" %}  type="text/css" media="all" />
+
+    <!-- Inline CSS for Background Image -->
+    <style>
+        body {
+            background-image: url("{% static 'pgbooking/images/login1.webp' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Additional styles to make the form block stand out */
+        .w3l-loginblock {
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .w3l-loginblock {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: black;
+            opacity: 70%;
+            border: solid blanchedalmond 2px;}
+            .input-field label {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: 700;
+                color: white;
+            }
+            a {
+                color: white;
+                text-decoration: none;
+                font-size: 0.875rem;
+            }
+            .logo .brand-logo {
+                font-size: 1.5rem;
+                font-weight: 700;
+                text-decoration: none;
+                color: white;
+            }
+    </style>
+
+</head>
+
+<body>
+    <div class="w3l-loginblock signinform">
+        <div class="logo">
+            <a class="brand-logo" href="index.html">Owner Login Form</a>
+        </div>
+        <!-- main content -->
+        <div class="row map-content-9">
+            <div class="info-grids">
+                <form method="post" class="" action="{% url 'ownerlogin'%}">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div class="input-field">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" id="email" placeholder="Email" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="password">Password</label>
+                            <input type="password" name="password" id="password" placeholder="Password" required>
+                        </div>
+                        <label class="check-remaind">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                            <p class="remember">Remember Me</p>
+                        </label>
+                        <a href="{% url 'register_owner' %}">Owner Registration</a><br><br>
+                        <a href="{% url 'owner_forgot_password' %}">Forgot Password</a><br><br>
+                        <a href="{% url 'login' %}">User Login</a><br><br>
+                        <button type="submit" class="btn-style">Login Now</button>
+                    </form>
+                </div>
+                {% if pass %}
+                <script>
+                    alert('{{ pass }}');
+                </script>
+                {% endif %}
+                {% if notregstered %}
+                <script>
+                    alert('{{ notregstered }}');
+                </script>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- fontawesome v5 -->
+    <script src="{% static 'fontawesome.js' %}"></script>
+</body>
+
+</html>

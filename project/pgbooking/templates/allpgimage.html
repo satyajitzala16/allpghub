@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload PG Images</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload PG Images</h1>
+        <form action="{% url 'upload_pg_images' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Dropdown to select PG name for the owner -->
+            <label for="pg_name">Select PG:</label>
+            <select name="pg_name" id="pg_name" required>
+                {% for pg in pgs %}
+                    <option value="{{ pg.id }}">{{ pg.pgname }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <!-- Input for multiple images -->
+            <label for="images">Select images:</label>
+            <input type="file" name="images" id="images" multiple><br><br>
+
+            <button type="submit">Upload Images</button>
+        </form>
+    </div>
+</body>
+</html>

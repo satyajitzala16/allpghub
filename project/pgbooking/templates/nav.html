@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ALL PG HUB</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="{% static 'CSS/Style.css' %}" />
+    <style>
+      /* Navbar Styling */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 1071;
+            background-color: #343a40 !important;
+      }
+      .navbar {
+        padding: 0.5rem 1rem;
+        background-color: #343a40; /* Dark background */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .navbar-brand {
+        font-size: 1.75rem;
+        font-weight: bold;
+        color: #fff;
+        display: flex;
+        align-items: center;
+      }
+      .navbar-brand img {
+        height: 60px;
+        margin-right: 0.5rem;
+        border-radius: 50%;
+        width: 75px;
+        object-fit: cover;
+      }
+      .nav-link {
+        color: #fff !important;
+        margin: 0 0.75rem;
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+      }
+      .nav-link:hover {
+        color: #00c851 !important;
+        text-decoration: underline;
+      }
+      .navbar-toggler {
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+      .navbar-toggler-icon {
+        background-color: #fff;
+      }
+      .navbar-nav {
+        align-items: center;
+      }
+      .dropdown-menu {
+        background-color: #343a40;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .dropdown-item {
+        color: #fff !important;
+        transition: background-color 0.3s ease;
+      }
+      .dropdown-item:hover {
+        background-color: #00c851;
+        color: #fff !important;
+      }
+      .btn-login {
+        background-color: #00c851;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+      .btn-login:hover {
+        background-color: #009933;
+      }
+    </style>
+  </head>
+  <body>
+    <!--====================== Navbar ======================-->
+    <header class="container-fluid" style="--bs-gutter-x: 0rem;">
+      <nav class="navbar navbar-expand-lg" style="padding: 0 10px;">
+        <a class="navbar-brand" href="{% url 'index' %}">
+          <img src="{% static 'pgbooking/images/ps.png' %}" alt="Logo" />
+          ALL PG HUB
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse responsive_nav" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'index' %}">Home</a>
+            </li>
+            {% if request.session.email %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'about_us' %}">About Us</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'contact_us' %}">Contact Us</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i class="fa fa-user-circle" aria-hidden="true"></i> Profile
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item text-black" href="{% url 'profile' %}">Profile</a>
+                <a class="dropdown-item text-black" href="{% url 'logout' %}">
+                  Logout
+                </a>
+              </div>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class=" btn-login"  href="{% url 'login' %}">Login</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Content Block -->
+    {% block content %}
+    {% endblock content %}
+  </body>
+</html>

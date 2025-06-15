@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        #rzp-button {
+            background-color: #F37254;
+            color: white;
+            font-size: 16px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #rzp-button:hover {
+            background-color: #e35446;
+        }
+
+        .payment-container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .payment-container p {
+            font-size: 18px;
+        }
+
+        .payment-container button {
+            background-color: #F37254;
+            color: white;
+            font-size: 16px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .payment-container button:hover {
+            background-color: #e35446;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .footer a {
+            color: #F37254;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="payment-container">
+    <h1>Complete Your Payment</h1>
+    <p>Your total amount is ₹{{ amount }} ({{ room_type }} room)</p>
+
+    <button id="rzp-button">Pay Now</button>
+</div>
+
+<script>
+    var options = {
+        "key": "{{ RAZORPAY_KEY_ID }}",  // Enter the Key ID generated from the Razorpay Dashboard
+        "amount": "{{ multiplied_amount }}",  // Amount in paise (passed from Django)
+        "currency": "INR",
+        "name": "PG Booking",
+        "description": "Room Booking Payment",
+        "order_id": "{{ order_id }}",  // Order ID passed from Django
+        "handler": function (response) {
+            // Redirect to payment success page
+            window.location.href = "{% url 'payment-success' %}?razorpay_payment_id=" + response.razorpay_payment_id + "&razorpay_order_id=" + response.razorpay_order_id + "&razorpay_signature=" + response.razorpay_signature;
+        },
+        "prefill": {
+            "contact": "9999999999",  // Dummy contact for testing
+            "email": "test@example.com"  // Dummy email for testing
+        },
+        "theme": {
+            "color": "#F37254"
+        },
+        "method": {
+            "upi": true,  // Enable UPI
+            "card": true,  // Enable Card
+            "netbanking": true,  // Enable Netbanking
+            "wallet": true,  // Enable Wallet
+            "gpay": true,   // Enable GPay
+        }
+    };
+
+    var rzp1 = new Razorpay(options);
+
+    document.getElementById('rzp-button').onclick = function(e) {
+        rzp1.open();
+        e.preventDefault();
+    }
+</script>
+
+<div class="footer">
+    <p>Need help? <a href="#">Contact Support</a></p>
+</div>
+
+</body>
+</html>

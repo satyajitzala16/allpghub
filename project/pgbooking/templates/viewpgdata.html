@@ -1,0 +1,694 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PG Listings - Owner Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: var(--box-shadow);
+            padding: 15px 0;
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .user-actions a {
+            margin-left: 15px;
+            color: var(--dark-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .user-actions a:hover {
+            color: var(--primary-color);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--secondary-color);
+            margin-bottom: 30px;
+            font-size: 2rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .pg-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .pg-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .pg-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .pg-image-container {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pg-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .pg-card:hover .pg-image-container img {
+            transform: scale(1.05);
+        }
+
+        .no-image {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .pg-details {
+            padding: 20px;
+        }
+
+        .pg-details h3 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .pg-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .pg-meta span {
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--dark-color);
+        }
+
+        .pg-actions {
+            display: flex;
+            border-top: 1px solid #eee;
+            padding: 10px 20px;
+            justify-content: space-between;
+        }
+
+        .pg-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .pg-actions button.edit {
+            color: var(--primary-color);
+        }
+
+        .pg-actions button.edit:hover {
+            background-color: rgba(74, 111, 165, 0.1);
+        }
+
+        .pg-actions button.delete {
+            color: var(--danger-color);
+        }
+
+        .pg-actions button.delete:hover {
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        /* Additional Images Horizontal Scroll */
+        .additional-images-container {
+            margin-top: 15px;
+        }
+
+        .additional-images-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .additional-images-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #ccc #f5f5f5;
+        }
+
+        .additional-images-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .additional-images-scroll::-webkit-scrollbar-track {
+            background: #f5f5f5;
+            border-radius: 3px;
+        }
+
+        .additional-images-scroll::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 3px;
+        }
+
+        .additional-image-container {
+            position: relative;
+            flex: 0 0 60px;
+            height: 60px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .additional-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .delete-image-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .delete-image-btn:hover {
+            opacity: 1;
+        }
+
+        /* Edit Form Styles */
+        .edit-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .edit-container.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .edit-form {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+        }
+
+        .edit-form h2 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .empty-state p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .pg-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .user-actions {
+                margin-top: 10px;
+            }
+
+            .edit-form {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .pg-container {
+                grid-template-columns: 1fr;
+            }
+
+            .pg-card {
+                max-width: 100%;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">PG Management</a>
+            <div class="user-actions">
+                {% comment %} <a href="#"><i class="fas fa-user-circle"></i> My Account</a> {% endcomment %}
+                {% comment %} <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a> {% endcomment %}
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Your PG Listings</h1>
+
+        <div class="pg-container">
+            {% for pg in pgs %}
+            <div class="pg-card">
+                <div class="pg-image-container">
+                    {% if pg.pgimage %}
+                    <img src="{{ pg.pgimage.url }}" alt="{{ pg.pgname }}">
+                    {% else %}
+                    <div class="no-image">
+                        <span>No Image Available</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="pg-details">
+                    <h3>{{ pg.pgname }}</h3>
+                    <div class="pg-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> {{ pg.city }}, {{ pg.area }}</span>
+                        <span><i class="fas fa-venus-mars"></i> {{ pg.gender|title }}</span>
+                        <span><i class="fas fa-user-tie"></i> {{ pg.pgmanager }}</span>
+                    </div>
+                    
+                    {% if pg.images.all %}
+                    <div class="additional-images-container">
+                        <div class="additional-images-title">Additional Images:</div>
+                        <div class="additional-images-scroll">
+                            {% for image in pg.images.all %}
+                            <div class="additional-image-container">
+                                <img src="{{ image.image.url }}" class="additional-image" alt="Additional image">
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="pg-actions">
+                    <button class="edit" onclick="openEditForm('{{ pg.id }}', '{{ pg.pgname }}', '{{ pg.gender }}', '{{ pg.state }}', '{{ pg.city }}', '{{ pg.area }}', '{{ pg.pgmanager }}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <form method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="pg_id" value="{{ pg.id }}">
+                        <button type="submit" name="delete_pg" class="delete" onclick="return confirm('Are you sure you want to delete this PG?');">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-home"></i>
+                <p>You don't have any PG listings yet. Add your first PG to get started!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="edit-container" class="edit-container">
+        <div class="edit-form">
+            <h2>Edit PG Details</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="pg_id" id="pg_id">
+
+                <div class="form-group">
+                    <label for="pgname">PG Name</label>
+                    <input type="text" name="pgname" id="pgname" placeholder="Enter PG Name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pglogo">PG Logo</label>
+                    <input type="file" name="pglogo" id="pglogo" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label for="pgimage">PG Main Image</label>
+                    <input type="file" name="pgimage" id="pgimage" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label for="pgvideo">PG Video</label>
+                    <input type="file" name="pgvideo" id="pgvideo" accept="video/*">
+                </div>
+
+                <div class="form-group">
+                    <label for="additional_images">Additional PG Images</label>
+                    <input type="file" name="additional_images" id="additional_images" multiple accept="image/*">
+                    <small class="text-muted">You can select multiple images</small>
+                </div>
+
+                <div class="form-group" id="existing-images-container">
+                    <label>Existing Additional Images:</label>
+                    <div class="additional-images-scroll" id="existing-images">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select name="gender" id="gender" required>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="unisex">Unisex</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <input type="text" name="state" id="state" placeholder="Enter State" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" name="city" id="city" placeholder="Enter City" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="area">Area</label>
+                    <input type="text" name="area" id="area" placeholder="Enter Area" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pgmanager">PG Manager</label>
+                    <input type="text" name="pgmanager" id="pgmanager" placeholder="Enter PG Manager Name" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-danger" onclick="closeEditForm()">Cancel</button>
+                    <button type="submit" name="update_pg" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openEditForm(pgId, pgName, gender, state, city, area, pgmanager) {
+            const editContainer = document.getElementById('edit-container');
+            document.getElementById('pg_id').value = pgId;
+            document.getElementById('pgname').value = pgName;
+            document.getElementById('gender').value = gender;
+            document.getElementById('state').value = state;
+            document.getElementById('city').value = city;
+            document.getElementById('area').value = area;
+            document.getElementById('pgmanager').value = pgmanager || '';
+            
+            // Fetch and display existing additional images
+            fetch(`/get_pg_images/?pg_id=${pgId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const container = document.getElementById('existing-images');
+                    container.innerHTML = '';
+                    
+                    if (data.images && data.images.length > 0) {
+                        data.images.forEach(image => {
+                            const imgDiv = document.createElement('div');
+                            imgDiv.className = 'additional-image-container';
+                            imgDiv.innerHTML = `
+                                <img src="${image.image_url}" class="additional-image" alt="Additional image">
+                                <button class="delete-image-btn" onclick="deleteImage(${image.id}, ${pgId})" title="Delete image">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            `;
+                            container.appendChild(imgDiv);
+                        });
+                    } else {
+                        container.innerHTML = '<p>No additional images found</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching images:', error);
+                    document.getElementById('existing-images').innerHTML = '<p>Error loading images</p>';
+                });
+            
+            editContainer.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEditForm() {
+            const editContainer = document.getElementById('edit-container');
+            editContainer.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function deleteImage(imageId, pgId) {
+            if (confirm('Are you sure you want to delete this image? This action cannot be undone.')) {
+                fetch('/delete_pg_image/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        image_id: imageId,
+                        pg_id: pgId
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Refresh the edit form
+                        const pgId = document.getElementById('pg_id').value;
+                        openEditForm(pgId, 
+                            document.getElementById('pgname').value,
+                            document.getElementById('gender').value,
+                            document.getElementById('state').value,
+                            document.getElementById('city').value,
+                            document.getElementById('area').value,
+                            document.getElementById('pgmanager').value
+                        );
+                    } else {
+                        alert('Failed to delete image: ' + (data.error || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting image:', error);
+                    alert('An error occurred while deleting the image');
+                });
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('edit-container').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditForm();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('edit-container').classList.contains('active')) {
+                closeEditForm();
+            }
+        });
+    </script>
+</body>
+</html>

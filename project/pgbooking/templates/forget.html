@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Forget Password</title>
+
+    <!-- Meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Google fonts -->
+    <link href="//fonts.googleapis.com/css?family=Nunito:400,700&display=swap" rel="stylesheet">
+
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="{% static 'CSS/jp.css' %}" type="text/css" media="all" />
+
+    <!-- Inline CSS for Background Image -->
+    <style>
+        body {
+            background-image: url("{% static 'pgbooking/images/login1.webp' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Additional styles for form */
+        .w3l-loginblock {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="w3l-loginblock signinform">
+        <div class="logo">
+            <a class="brand-logo" href="index.html">Forget Password</a>
+        </div>
+
+        <!-- main content -->
+        <div class="row map-content-9">
+            <div class="info-grids">
+                <form method="post" action="{% url 'forget' %}">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div class="input-field">
+                            <label>Email</label>
+                            <input type="email" name="email" placeholder="Enter your email" required="">
+                        </div>
+                    </div>
+
+                    <label class="check-remaind">
+                        <input type="checkbox" name="remember_me">
+                        <span class="checkmark"></span>
+                        <p class="remember">Remember Me</p>
+                    </label>
+
+                    <button type="submit" class="btn btn-primary btn-style">Send Reset Link</button>
+                </form>
+
+                <!-- Display Alerts for Success/Error -->
+                {% if pass %}
+                <script>
+                    alert('{{ pass }}');
+                </script>
+                {% endif %}
+
+                {% if notregstered %}
+                <script>
+                    alert('{{ notregstered }}');
+                </script>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- fontawesome v5 -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+
+</html>

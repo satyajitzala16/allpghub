@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Registration Form</title>
+
+    <!-- Meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Google Fonts -->
+    <link href="//fonts.googleapis.com/css?family=Nunito:400,700&display=swap" rel="stylesheet">
+
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="{% static 'CSS/jp.css' %}" type="text/css" media="all" />
+
+    <style>
+        body {
+            background-image: url("{% static 'pgbooking/images/login1.webp' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .w3l-loginblock {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-field label {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .input-field input,
+        .input-field textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            grid-column: span 2;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .check-remaind {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            grid-column: span 2;
+        }
+
+        .check-remaind input {
+            margin-right: 10px;
+        }
+
+        .remember {
+            font-size: 14px;
+        }
+
+        .logo h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .w3l-loginblock {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: black;
+            opacity: 70%;
+            border: solid blanchedalmond 2px;}
+            .input-field label {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: 700;
+                color: white;
+            }
+            a {
+                color: white;
+                text-decoration: none;
+                font-size: 0.875rem;
+            }
+            .logo .brand-logo {
+                font-size: 1.5rem;
+                font-weight: 700;
+                text-decoration: none;
+                color: white;}
+                .remember {
+                    font-size: 14px;
+                    color: white;
+                }
+            .logo h2 {
+                color: white;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="w3l-loginblock signinform">
+        <div class="logo">
+            <h2>Register</h2>
+        </div>
+        <div class="info-grids">
+            <form method="post" action="{% url 'register' %}">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="input-field">
+                        <label>Username</label>
+                        <input type="text" name="name" placeholder="Username" required="">
+                    </div>
+                    <div class="input-field">
+                        <label>Email</label>
+                        <input type="email" name="email" placeholder="Email" required="">
+                    </div>
+                    <div class="input-field">
+                        <label>Mobile</label>
+                        <input type="text" name="mob" placeholder="Contact No" required="">
+                    </div>
+                    <div class="input-field">
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="Password" required="">
+                    </div>
+                    <div class="input-field">
+                        <label>Confirm Password</label>
+                        <input type="password" name="cp" placeholder="Confirm Password" required="">
+                    </div>
+                    <div class="input-field">
+                        <label>Address</label>
+                        <textarea name="add" placeholder="Your address" required=""></textarea>
+                    </div>
+                </div>
+
+                <label class="check-remaind">
+                    <input type="checkbox">
+                    <span class="remember">Remember Me</span>
+                </label>
+
+                <button type="submit" class="btn">Register Now</button>
+            </form>
+
+            <!-- Alerts for different scenarios -->
+            {% if store %}
+            <script>
+                alert('{{ store }}');
+            </script>
+            {% endif %}
+            {% if already %}
+            <script>
+                alert('{{ already }}');
+            </script>
+            {% endif %}
+            {% if pass %}
+            <script>
+                alert('{{ pass }}');
+            </script>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- FontAwesome -->
+    <script src="{% static 'js/fontawesome.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,167 @@
+/* CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+/* General Styles */
+body, html {
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+a {
+  text-decoration: none !important;
+  list-style: none;
+}
+
+i {
+  color: orange;
+}
+
+.nav-link,
+.navbar-brand {
+  color: white !important; /* Force the text color to be white */
+}
+
+/* For hover effect */
+.nav-link:hover {
+  color: #00c851 !important; /* Green on hover */
+}
+
+
+li > a {
+  color: #fff;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: auto;
+}
+
+a:hover {
+  color: #fff;
+}
+
+a > i {
+  font-size: 20px;
+}
+
+a > i:hover {
+  color: blue;
+}
+
+.scale-style {
+  overflow: hidden;
+}
+
+.img-hover {
+  transition: 0.3s ease-in-out;
+}
+
+.img-hover:hover {
+  transform: scale(1.1);
+}
+
+.ratingcolor {
+  color: rgb(255, 164, 28);
+}
+
+.bg-img {
+  background-image: url(Img/3671942.jpg);
+}
+
+/* Style for Card Image */
+.card-img-top {
+  width: 100%; /* Adjust width to ensure it fits the card */
+  height: 200px; /* Adjust height as needed */
+  object-fit: cover; /* Ensures the image covers the entire area */
+}
+
+/* Full Height Container */
+.container {
+  min-height: calc(100vh - 150px); 
+  /* Adjust 150px based on your footer's height */
+}
+
+footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  padding: 40px 0; /* Adjust padding for height */
+  background-color: #343a40; /* Dark background */
+  color: white; /* Text color */
+}
+
+footer .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: auto;
+}
+
+footer .row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+footer .col-md-4 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+footer .col-md-4 ul {
+  padding-left: 0;
+}
+
+footer .col-md-4 ul li {
+  list-style: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+footer .list-inline {
+  display: flex;
+  justify-content: center;
+  padding-left: 0;
+}
+
+footer .list-inline-item {
+  margin: 0 10px;
+}
+
+footer hr {
+  width: 100%;
+  border-top: 1px solid #555;
+  margin: 20px 0;
+}
+
+footer p {
+  margin: 0;
+  text-align: center;
+}
+.container-fluid{
+  background:black;
+      /* border: 2px solid; */
+
+}
+
+
+@media (max-width: 768px) and (max-width: 1200px) 
+{
+  .responsive_nav{
+
+  padding-bottom: 20px;
+
+}
+ 
+}

@@ -1,0 +1,56 @@
+<!-- error_page.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Page</title>
+    <style>
+        /* CSS Styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            color: #d9534f; /* Red for error */
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #5bc0de; /* Bootstrap teal color */
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #31b0d5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Error Occurred</h1>
+    <p>You have already booked a bed with this email.</p>
+    <br>
+    <p>You have check your profile.</p>
+    {% comment %} <a href="{% url 'user_pdf' user.id %}">Download PDF</a> {% endcomment %}
+    <a href="{% url 'index' %}" class="btn">Return to Homepage</a>
+</body>
+</html>

@@ -1,0 +1,58 @@
+
+  /* Custom styles for circular images */
+  .img-circle {
+    border-radius: 50%;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+
+  /* Navbar styling */
+  .navbar {
+    background: linear-gradient(45deg, #007bff, #00c851);
+    padding: 0.5rem 1rem; /* Adjust padding for better height */
+  }
+  .navbar-brand {
+    font-size: 1.75rem; /* Increase font size for better visibility */
+    font-weight: bold;
+    color: #fff;
+  }
+  .nav-link {
+    color: #fff !important;
+    margin: 0 0.75rem; /* Adjust margin for better spacing */
+    font-size: 1.1rem; /* Slightly increase font size */
+  }
+  .nav-link:hover {
+    color: #00c851 !important;
+    text-decoration: underline; /* Add underline on hover */
+  }
+  .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  .navbar-toggler-icon {
+    background-color: #fff;
+  }
+  .dropdown-menu {
+    background-color: #007bff;
+    border: none; /* Remove default border */
+  }
+  .dropdown-item {
+    color: #fff !important;
+  }
+  .dropdown-item:hover {
+    background-color: #00c851;
+  }
+  .navbar-nav {
+    align-items: center; /* Center items vertically */
+  }
+  .dropdown-menu {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow to dropdown */
+  }
+  /* Custom styles for circular images */
+  .img-circle {
+    border-radius: 50%;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }

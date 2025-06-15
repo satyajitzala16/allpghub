@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Your PG</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-container {
+            max-width: 800px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .icon-label {
+            display: flex;
+            align-items: center;
+        }
+
+        .icon-label i {
+            margin-right: 8px;
+            color: #007bff;
+        }
+
+        .amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .amenity-item {
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .amenity-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .amenity-item i {
+            margin-right: 5px;
+            color: #28a745;
+        }
+
+        .amenity-item label {
+            margin: 0;
+            font-weight: normal;
+        }
+
+        .btn-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn-navigation button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-navigation button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .amenity-section {
+            margin-bottom: 20px;
+        }
+
+        .amenity-section h5 {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f1f1f1;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .amenity-section h5 i {
+            transition: transform 0.3s;
+        }
+
+        .amenity-section.collapsed .amenities {
+            display: none;
+        }
+
+        .amenity-section.collapsed h5 i {
+            transform: rotate(0deg);
+        }
+
+        .amenity-section:not(.collapsed) h5 i {
+            transform: rotate(180deg);
+        }
+
+        .text-danger {
+            color: red;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Add Your PG</h2>
+            <form id="pg-form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- Step 1: Basic Information -->
+                <div class="form-step active" id="step1">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pgname" class="icon-label">
+                                    <i class="fas fa-home"></i> PG Name
+                                </label>
+                                <input type="text" id="pgname" name="pgname" class="form-control" required maxlength="60">
+                                <small class="error-message" id="pgname-error"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pgimage" class="icon-label">
+                                    <i class="fas fa-image"></i> PG Image
+                                </label>
+                                <input type="file" id="pgimage" name="pgimage" class="form-control" accept="image/*" required>
+                                <small class="error-message" id="pgimage-error"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pglogo" class="icon-label">
+                                    <i class="fas fa-sign"></i> PG Logo
+                                </label>
+                                <input type="file" id="pglogo" name="pglogo" class="form-control" accept="image/*">
+                                <small class="error-message" id="pglogo-error"></small>
+                            </div>
+                        </div>
+                        <!-- In your form, update the additional images input field -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pgimages" class="icon-label">
+                                    <i class="fas fa-images"></i> Additional PG Images
+                                </label>
+                                <input type="file" id="pgimages" name="pgimages" class="form-control" accept="image/*" multiple>
+                                <small class="text-muted">You can select multiple images</small>
+                                <small class="error-message" id="pgimages-error"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pgvideo" class="icon-label">
+                                    <i class="fas fa-video"></i> PG Video
+                                </label>
+                                <input type="file" id="pgvideo" name="pgvideo" class="form-control" accept="video/*">
+                                <small class="error-message" id="pgvideo-error"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="gender" class="icon-label">
+                                    <i class="fas fa-venus-mars"></i> Gender
+                                </label>
+                                <select id="gender" name="gender" class="form-control" required>
+                                    <option value="" disabled selected>Select your gender</option>
+                                    <option value="male">Boys</option>
+                                    <option value="female">Girls</option>
+                                </select>
+                                <small class="error-message" id="gender-error"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Location Details -->
+                <div class="form-step" id="step2">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pgstate" class="icon-label">
+                                    <i class="fas fa-map-marker-alt"></i> State
+                                </label>
+                                <select id="pgstate" name="pgstate" class="form-control" required>
+                                    <option value="">Select State</option>
+                                </select>
+                                <small class="error-message" id="pgstate-error"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="city" class="icon-label">
+                                    <i class="fas fa-city"></i> City
+                                </label>
+                                <select id="city" name="city" class="form-control" required>
+                                    <option value="">Select City</option>
+                                </select>
+                                <small class="error-message" id="city-error"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="area" class="icon-label">
+                                    <i class="fas fa-map"></i> Area
+                                </label>
+                                <input type="text" id="area" name="area" class="form-control" required>
+                                <small class="error-message" id="area-error"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pgmanager" class="icon-label">
+                                    <i class="fas fa-phone"></i> PG Manager Phone Number
+                                </label>
+                                <input type="text" id="pgmanager" name="pgmanager" class="form-control" required maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                <small class="error-message" id="pgmanager-error"></small>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="address" class="icon-label">
+                                    <i class="fas fa-map-marker-alt"></i> Address
+                                </label>
+                                <textarea id="address" name="address" class="form-control" rows="3" placeholder="Enter the full address" required></textarea>
+                                <small class="error-message" id="address-error"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Amenities -->
+                <div class="form-step" id="step3">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="icon-label">
+                                    <i class="fas fa-list"></i> Amenities
+                                </label>
+                                <!-- Basic Amenities -->
+                                <div class="amenity-section collapsed">
+                                    <h5 onclick="toggleSection(this)">
+                                        <span>Basic Amenities</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </h5>
+                                    <div class="amenities">
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="bed" name="amenities" value="bed">
+                                            <label for="bed"><i class="fas fa-bed"></i> Bed & Mattress</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="fan" name="amenities" value="fan">
+                                            <label for="fan"><i class="fas fa-fan"></i> Fan / AC</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="cupboard" name="amenities" value="cupboard">
+                                            <label for="cupboard"><i class="fas fa-archive"></i> Cupboard / Wardrobe</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="study-table" name="amenities" value="study-table">
+                                            <label for="study-table"><i class="fas fa-chair"></i> Study Table & Chair</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="bathroom" name="amenities" value="bathroom">
+                                            <label for="bathroom"><i class="fas fa-bath"></i> Attached / Shared Bathroom</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="water-supply" name="amenities" value="water-supply">
+                                            <label for="water-supply"><i class="fas fa-tint"></i> 24x7 Water Supply</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="electricity" name="amenities" value="electricity">
+                                            <label for="electricity"><i class="fas fa-bolt"></i> Electricity</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Food & Kitchen Amenities -->
+                                <div class="amenity-section collapsed">
+                                    <h5 onclick="toggleSection(this)">
+                                        <span>Food & Kitchen Amenities</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </h5>
+                                    <div class="amenities">
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="daily-meals" name="amenities" value="daily-meals">
+                                            <label for="daily-meals"><i class="fas fa-utensils"></i> Daily Meals</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="shared-kitchen" name="amenities" value="shared-kitchen">
+                                            <label for="shared-kitchen"><i class="fas fa-utensil-spoon"></i> Shared Kitchen Access</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="stove" name="amenities" value="stove">
+                                            <label for="stove"><i class="fas fa-fire"></i> Induction Stove / Gas Stove</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="fridge" name="amenities" value="fridge">
+                                            <label for="fridge"><i class="fas fa-temperature-low"></i> Refrigerator</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="water-purifier" name="amenities" value="water-purifier">
+                                            <label for="water-purifier"><i class="fas fa-filter"></i> Water Purifier</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cleaning & Maintenance -->
+                                <div class="amenity-section collapsed">
+                                    <h5 onclick="toggleSection(this)">
+                                        <span>Cleaning & Maintenance</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </h5>
+                                    <div class="amenities">
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="housekeeping" name="amenities" value="housekeeping">
+                                            <label for="housekeeping"><i class="fas fa-broom"></i> Housekeeping Services</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="laundry" name="amenities" value="laundry">
+                                            <label for="laundry"><i class="fas fa-tshirt"></i> Laundry Services</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="dustbin" name="amenities" value="dustbin">
+                                            <label for="dustbin"><i class="fas fa-trash"></i> Dustbin in Room</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="pest-control" name="amenities" value="pest-control">
+                                            <label for="pest-control"><i class="fas fa-bug"></i> Regular Pest Control</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Safety & Security -->
+                                <div class="amenity-section collapsed">
+                                    <h5 onclick="toggleSection(this)">
+                                        <span>Safety & Security</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </h5>
+                                    <div class="amenities">
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="cctv" name="amenities" value="cctv">
+                                            <label for="cctv"><i class="fas fa-video"></i> CCTV Surveillance</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="security-guard" name="amenities" value="security-guard">
+                                            <label for="security-guard"><i class="fas fa-shield-alt"></i> Security Guard</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="biometric" name="amenities" value="biometric">
+                                            <label for="biometric"><i class="fas fa-id-card"></i> Biometric / Smart Card Entry</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="fire-extinguisher" name="amenities" value="fire-extinguisher">
+                                            <label for="fire-extinguisher"><i class="fas fa-fire-extinguisher"></i> Fire Extinguisher</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Entertainment & Connectivity -->
+                                <div class="amenity-section collapsed">
+                                    <h5 onclick="toggleSection(this)">
+                                        <span>Entertainment & Connectivity</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </h5>
+                                    <div class="amenities">
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="wifi" name="amenities" value="wifi">
+                                            <label for="wifi"><i class="fas fa-wifi"></i> Wi-Fi / High-Speed Internet</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="tv" name="amenities" value="tv">
+                                            <label for="tv"><i class="fas fa-tv"></i> TV in Common Area / Room</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="cable" name="amenities" value="cable">
+                                            <label for="cable"><i class="fas fa-satellite-dish"></i> Cable / DTH Connection</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Common Facilities -->
+                                <div class="amenity-section collapsed">
+                                    <h5 onclick="toggleSection(this)">
+                                        <span>Common Facilities</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </h5>
+                                    <div class="amenities">
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="parking" name="amenities" value="parking">
+                                            <label for="parking"><i class="fas fa-parking"></i> Parking for Bikes & Cars</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="lift" name="amenities" value="lift">
+                                            <label for="lift"><i class="fas fa-elevator"></i> Lift / Elevator</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="lounge" name="amenities" value="lounge">
+                                            <label for="lounge"><i class="fas fa-couch"></i> Common Lounge / Sitting Area</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="garden" name="amenities" value="garden">
+                                            <label for="garden"><i class="fas fa-leaf"></i> Garden / Terrace</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Paid Services -->
+                                <div class="amenity-section collapsed">
+                                    <h5 onclick="toggleSection(this)">
+                                        <span>Additional Paid Services</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </h5>
+                                    <div class="amenities">
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="locker" name="amenities" value="locker">
+                                            <label for="locker"><i class="fas fa-lock"></i> Personal Locker Facility</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="geyser" name="amenities" value="geyser">
+                                            <label for="geyser"><i class="fas fa-burn"></i> Geyser for Hot Water</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="power-backup" name="amenities" value="power-backup">
+                                            <label for="power-backup"><i class="fas fa-battery-full"></i> Power Backup / Generator</label>
+                                        </div>
+                                        <div class="amenity-item">
+                                            <input type="checkbox" id="gym" name="amenities" value="gym">
+                                            <label for="gym"><i class="fas fa-dumbbell"></i> Gym / Fitness Center</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="btn-navigation">
+                    <button type="button" id="prevBtn" class="btn btn-secondary" onclick="prevStep()" disabled>Previous</button>
+                    <button type="button" id="nextBtn" class="btn btn-primary" onclick="nextStep()">Next</button>
+                    <button type="submit" id="submitBtn" class="btn btn-success" style="display: none;">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Multi-step form logic
+        let currentStep = 1;
+        const totalSteps = 3; // Reduced from 4 since we removed the map step
+
+        function showStep(step) {
+            document.querySelectorAll('.form-step').forEach((stepElement) => {
+                stepElement.classList.remove('active');
+            });
+            document.getElementById(`step${step}`).classList.add('active');
+
+            document.getElementById('prevBtn').disabled = step === 1;
+            document.getElementById('nextBtn').disabled = step === totalSteps;
+
+            // Show submit button on the last step
+            if (step === totalSteps) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'inline-block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'inline-block';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+        }
+
+        function nextStep() {
+            if (validateCurrentStep()) {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    showStep(currentStep);
+                }
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        // State and city data
+        const data = {
+            'Gujarat': {
+                'Ahmedabad': [],
+                'Vadodara': []
+            }
+        };
+
+        const stateSelect = document.getElementById('pgstate');
+        const citySelect = document.getElementById('city');
+
+        Object.keys(data).forEach(state => {
+            const option = document.createElement('option');
+            option.value = state;
+            option.textContent = state;
+            stateSelect.appendChild(option);
+        });
+
+        stateSelect.addEventListener('change', () => {
+            const selectedState = stateSelect.value;
+            citySelect.innerHTML = '<option value="">Select City</option>';
+
+            if (selectedState && data[selectedState]) {
+                Object.keys(data[selectedState]).forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+            }
+        });
+
+        // Toggle amenity sections
+        function toggleSection(sectionHeader) {
+            const section = sectionHeader.parentElement;
+            section.classList.toggle('collapsed');
+        }
+
+        // Form validation for current step
+        function validateCurrentStep() {
+            let isValid = true;
+
+            // Validate Step 1
+            if (currentStep === 1) {
+                const pgname = document.getElementById('pgname').value.trim();
+                const pgimage = document.getElementById('pgimage').value;
+                const gender = document.getElementById('gender').value;
+
+                if (!pgname) {
+                    document.getElementById('pgname-error').textContent = 'PG Name is required';
+                    isValid = false;
+                } else if (pgname.length > 60) {
+                    document.getElementById('pgname-error').textContent = 'PG Name must be 60 characters or less';
+                    isValid = false;
+                } else {
+                    document.getElementById('pgname-error').textContent = '';
+                }
+
+                if (!pgimage) {
+                    document.getElementById('pgimage-error').textContent = 'PG Image is required';
+                    isValid = false;
+                } else {
+                    document.getElementById('pgimage-error').textContent = '';
+                }
+
+                if (!gender) {
+                    document.getElementById('gender-error').textContent = 'Gender is required';
+                    isValid = false;
+                } else {
+                    document.getElementById('gender-error').textContent = '';
+                }
+            }
+
+            // Validate Step 2
+            if (currentStep === 2) {
+                const pgstate = document.getElementById('pgstate').value;
+                const city = document.getElementById('city').value;
+                const area = document.getElementById('area').value.trim();
+                const pgmanager = document.getElementById('pgmanager').value.trim();
+                const address = document.getElementById('address').value.trim();
+
+                if (!pgstate) {
+                    document.getElementById('pgstate-error').textContent = 'State is required';
+                    isValid = false;
+                } else {
+                    document.getElementById('pgstate-error').textContent = '';
+                }
+
+                if (!city) {
+                    document.getElementById('city-error').textContent = 'City is required';
+                    isValid = false;
+                } else {
+                    document.getElementById('city-error').textContent = '';
+                }
+
+                if (!area) {
+                    document.getElementById('area-error').textContent = 'Area is required';
+                    isValid = false;
+                } else {
+                    document.getElementById('area-error').textContent = '';
+                }
+
+                if (!pgmanager) {
+                    document.getElementById('pgmanager-error').textContent = 'PG Manager Phone Number is required';
+                    isValid = false;
+                } else if (!/^\d{8,13}$/.test(pgmanager)) {
+                    document.getElementById('pgmanager-error').textContent = 'Phone Number must be 8 to 13 digits and contain only numbers';
+                    isValid = false;
+                } else {
+                    document.getElementById('pgmanager-error').textContent = '';
+                }
+
+                if (!address) {
+                    document.getElementById('address-error').textContent = 'Address is required';
+                    isValid = false;
+                } else {
+                    document.getElementById('address-error').textContent = '';
+                }
+            }
+
+            return isValid;
+        }
+
+        // Add event listeners to clear validation messages on input
+        document.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('input', () => {
+                const errorElement = document.getElementById(`${input.id}-error`);
+                if (errorElement) {
+                    errorElement.textContent = '';
+                }
+            });
+        });
+
+        // Form submission validation
+        document.getElementById('pg-form').addEventListener('submit', function(event) {
+            if (!validateCurrentStep()) {
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

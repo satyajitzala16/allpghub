@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link rel="stylesheet" href="{% static 'CSS/lr.css' %}" type="text/css" media="all" />
+    <!-- Inline CSS for Background Image -->
+    <style>
+        body {
+            background-image: url("{% static 'pgbooking/images/login1.webp' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Form block styling */
+        .w3l-loginblock {
+            background: black;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            opacity: 70%;
+        }
+        .w3l-loginblock h2{
+            color:white;
+        }
+
+        /* Input and button styles */
+        .w3l-loginblock label {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .w3l-loginblock input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .w3l-loginblock button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .w3l-loginblock button:hover {
+            background-color: #45a049;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="w3l-loginblock">
+        <h2>OTP Verification</h2>
+        <form action="{% url 'otp_verify' %}" method="POST">
+            {% csrf_token %}
+            <label for="otp">Enter OTP:</label>
+            <input type="text" id="otp" name="otp" required>
+            <button type="submit">Verify</button>
+        </form>
+    </div>
+
+</body>
+</html>

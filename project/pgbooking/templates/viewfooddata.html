@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Weekly Food Plan</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Google Fonts for Better Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #007BFF;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            color: #007BFF;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        /* Form Styles */
+        form {
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: 500;
+            margin-right: 10px;
+        }
+
+        select, button {
+            padding: 10px 15px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-image {
+            color: #888;
+            font-style: italic;
+        }
+
+        /* Action Buttons */
+        .action-column {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            color: #007BFF;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .icon-button:hover {
+            color: #0056b3;
+        }
+
+        .icon-button.delete {
+            color: #FF0000;
+        }
+
+        .icon-button.delete:hover {
+            color: #cc0000;
+        }
+
+        /* Update Form Styles */
+        .update-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .update-form input[type="text"], .update-form input[type="file"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .update-form button {
+            align-self: flex-start;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.3rem;
+            }
+
+            .table th, .table td {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .form-control {
+                font-size: 14px;
+            }
+
+            .btn-primary {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .file-upload-label {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            h3 {
+                font-size: 1.2rem;
+            }
+
+            .table th, .table td {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .form-control {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-utensils"></i> View Weekly Food Plan</h1>
+
+        <!-- PG Selection Form -->
+        <form method="POST">
+            {% csrf_token %}
+            <label for="pg_id"><i class="fas fa-home"></i> Select PG:</label>
+            <select name="pg_id" id="pg_id" class="form-control" required>
+                <option value="">-- Select PG --</option>
+                {% for pg in pg_list %}
+                    <option value="{{ pg.id }}">{{ pg.pgname }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">View Plan</button>
+        </form>
+
+        {% if breakfast_entries or lunch_entries or dinner_entries %}
+            <h2>Weekly Food Plan</h2>
+
+            <!-- Common Delete Button for All Data -->
+            <form method="POST" style="margin-bottom: 20px;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_all">
+                <input type="hidden" name="pg_id" value="{{ pg_id }}">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete ALL data for this PG?');">
+                    <i class="fas fa-trash"></i> Delete All Data for This PG
+                </button>
+            </form>
+
+            <!-- Breakfast Table -->
+            {% if breakfast_entries %}
+                <h3>Breakfast</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Food Menu</th>
+                                <th>Drink</th>
+                                <th>Food Image</th>
+                                <th>Drink Image</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in breakfast_entries %}
+                            <tr>
+                                <td>{{ entry.day }}</td>
+                                <td>{{ entry.food_menu }}</td>
+                                <td>{{ entry.drink }}</td>
+                                <td>
+                                    {% if entry.food_image %}
+                                        <img src="{{ entry.food_image.url }}" alt="Food Image">
+                                    {% else %}
+                                        <p class="no-image">No image</p>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if entry.drink_image %}
+                                        <img src="{{ entry.drink_image.url }}" alt="Drink Image">
+                                    {% else %}
+                                        <p class="no-image">No image</p>
+                                    {% endif %}
+                                </td>
+                                <td class="action-column">
+                                    <!-- Update Form -->
+                                    <form method="POST" enctype="multipart/form-data" class="update-form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="update">
+                                        <input type="hidden" name="meal_type" value="breakfast">
+                                        <input type="hidden" name="meal_id" value="{{ entry.id }}">
+                                        <input type="text" name="food_menu" value="{{ entry.food_menu }}" required>
+                                        <input type="text" name="drink" value="{{ entry.drink }}" required>
+                                        <input type="file" name="food_image">
+                                        <input type="file" name="drink_image">
+                                        <button type="submit" class="icon-button"><i class="fas fa-edit"></i> Update</button>
+                                    </form>
+                                    
+                                    <!-- Delete Button for Single Day -->
+                                    <form method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="meal_type" value="breakfast">
+                                        <input type="hidden" name="meal_id" value="{{ entry.id }}">
+                                        <button type="submit" class="icon-button delete" onclick="return confirm('Are you sure you want to delete this entry?');"><i class="fas fa-trash"></i> Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            <!-- Lunch Table -->
+            {% if lunch_entries %}
+                <h3>Lunch</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Food Menu</th>
+                                <th>Drink</th>
+                                <th>Food Image</th>
+                                <th>Drink Image</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in lunch_entries %}
+                            <tr>
+                                <td>{{ entry.day }}</td>
+                                <td>{{ entry.food_menu }}</td>
+                                <td>{{ entry.drink }}</td>
+                                <td>
+                                    {% if entry.food_image %}
+                                        <img src="{{ entry.food_image.url }}" alt="Food Image">
+                                    {% else %}
+                                        <p class="no-image">No image</p>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if entry.drink_image %}
+                                        <img src="{{ entry.drink_image.url }}" alt="Drink Image">
+                                    {% else %}
+                                        <p class="no-image">No image</p>
+                                    {% endif %}
+                                </td>
+                                <td class="action-column">
+                                    <!-- Update Form -->
+                                    <form method="POST" enctype="multipart/form-data" class="update-form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="update">
+                                        <input type="hidden" name="meal_type" value="lunch">
+                                        <input type="hidden" name="meal_id" value="{{ entry.id }}">
+                                        <input type="text" name="food_menu" value="{{ entry.food_menu }}" required>
+                                        <input type="text" name="drink" value="{{ entry.drink }}" required>
+                                        <input type="file" name="food_image">
+                                        <input type="file" name="drink_image">
+                                        <button type="submit" class="icon-button"><i class="fas fa-edit"></i> Update</button>
+                                    </form>
+                                    
+                                    <!-- Delete Button for Single Day -->
+                                    <form method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="meal_type" value="lunch">
+                                        <input type="hidden" name="meal_id" value="{{ entry.id }}">
+                                        <button type="submit" class="icon-button delete" onclick="return confirm('Are you sure you want to delete this entry?');"><i class="fas fa-trash"></i> Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            <!-- Dinner Table -->
+            {% if dinner_entries %}
+                <h3>Dinner</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Food Menu</th>
+                                <th>Drink</th>
+                                <th>Food Image</th>
+                                <th>Drink Image</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in dinner_entries %}
+                            <tr>
+                                <td>{{ entry.day }}</td>
+                                <td>{{ entry.food_menu }}</td>
+                                <td>{{ entry.drink }}</td>
+                                <td>
+                                    {% if entry.food_image %}
+                                        <img src="{{ entry.food_image.url }}" alt="Food Image">
+                                    {% else %}
+                                        <p class="no-image">No image</p>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if entry.drink_image %}
+                                        <img src="{{ entry.drink_image.url }}" alt="Drink Image">
+                                    {% else %}
+                                        <p class="no-image">No image</p>
+                                    {% endif %}
+                                </td>
+                                <td class="action-column">
+                                    <!-- Update Form -->
+                                    <form method="POST" enctype="multipart/form-data" class="update-form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="update">
+                                        <input type="hidden" name="meal_type" value="dinner">
+                                        <input type="hidden" name="meal_id" value="{{ entry.id }}">
+                                        <input type="text" name="food_menu" value="{{ entry.food_menu }}" required>
+                                        <input type="text" name="drink" value="{{ entry.drink }}" required>
+                                        <input type="file" name="food_image">
+                                        <input type="file" name="drink_image">
+                                        <button type="submit" class="icon-button"><i class="fas fa-edit"></i> Update</button>
+                                    </form>
+                                    
+                                    <!-- Delete Button for Single Day -->
+                                    <form method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="meal_type" value="dinner">
+                                        <input type="hidden" name="meal_id" value="{{ entry.id }}">
+                                        <button type="submit" class="icon-button delete" onclick="return confirm('Are you sure you want to delete this entry?');"><i class="fas fa-trash"></i> Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS and Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

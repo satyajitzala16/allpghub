@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Admin Dashboard</h2>
+        <h3>Pending Registrations</h3>
+        <ul class="list-group">
+            {% for owner in pending_owners %}
+                <li class="list-group-item">
+                    {{ owner.name }} - <a href="{% url 'approve_owner' owner.id %}">Approve</a>
+                </li>
+            {% empty %}
+                <li class="list-group-item">No pending registrations.</li>
+            {% endfor %}
+        </ul>
+        <a class="nav-link" href="{% url 'admin' %}">index</a>
+    </div>
+</body>
+</html>

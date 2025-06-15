@@ -1,0 +1,451 @@
+{% extends "nav.html" %}
+{% block content %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rooms for {{ pgname }}</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script> 
+  <link rel="stylesheet" href="{% static 'CSS/Style.css' %}" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        h2 {
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+        .room-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .card-body {
+            padding: 1.5rem;
+        }
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .card-text {
+            font-size: 1rem;
+            color: #555;
+        }
+        .badge {
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+            margin-right: 0.5rem;
+        }
+        .star {
+            font-size: 1.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .star:hover,
+        .star.selected {
+            color: gold;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        .video-container {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+        }
+        footer p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        .amenities-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .amenities-list li {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            padding: 5px 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+        
+        /* Gallery Styles */
+        .gallery-container {
+            margin-bottom: 30px;
+        }
+        .gallery-thumbnail {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            height: 200px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .gallery-thumbnail:hover {
+            transform: scale(1.03);
+        }
+        .gallery-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .gallery-thumbnail:hover img {
+            transform: scale(1.1);
+        }
+        .view-more-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        /* Modal Gallery Styles */
+        .modal-gallery-img {
+            width: 100%;
+            height: 400px;
+            object-fit: contain;
+        }
+        .thumbnail-container {
+            margin-top: 15px;
+            display: flex;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .thumbnail-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        .thumbnail-img:hover, 
+        .thumbnail-img.active {
+            opacity: 1;
+            border-color: #007bff;
+        }
+        
+        /* New layout for video and images */
+        .media-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .video-wrapper {
+            flex: 0 0 40%;
+            max-width: 40%;
+            padding-right: 15px;
+        }
+        .images-wrapper {
+            flex: 0 0 60%;
+            max-width: 60%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .image-col {
+            flex: 0 0 25%;
+            max-width: 25%;
+            padding: 0 5px;
+        }
+        .more-col {
+            position: relative;
+        }
+        
+        @media (max-width: 768px) {
+            .video-wrapper,
+            .images-wrapper {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            .video-wrapper {
+                padding-right: 0;
+                margin-bottom: 15px;
+            }
+            .image-col {
+                flex: 0 0 50%;
+                max-width: 50%;
+                margin-bottom: 10px;
+            }
+            .gallery-thumbnail {
+                height: 150px;
+            }
+            .modal-gallery-img {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="container py-5">
+        <h2 class="text-center mb-4">Rooms in {{ pgname }} PG</h2>
+
+        <!-- Gallery Section -->
+        <div class="gallery-container">
+            <div class="media-row">
+                {% if pgvideo %}
+                <div class="video-wrapper">
+                    <div class="h-100" style="background: #f0f0f0; border-radius: 8px; overflow: hidden;">
+                        <video controls class="w-100 h-100">
+                            <source src="{{ pgvideo }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="images-wrapper">
+                    {% if pg_images %}
+                        {% for image in pg_images %}
+                            {% if forloop.counter0 < 3 %}
+                            <div class="image-col">
+                                <div class="gallery-thumbnail" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery({{ forloop.counter0 }})">
+                                    <img src="{{ image.image.url }}" alt="PG Image {{ forloop.counter }}">
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if pg_images|length > 3 %}
+                        <div class="image-col more-col">
+                            <div class="gallery-thumbnail" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(0)">
+                                <img src="{{ pg_images.0.image.url }}" alt="PG Image">
+                                <div class="view-more-overlay">
+                                    +{{ pg_images|length|add:"-4" }} More
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                    <div class="col-12 text-center py-4">
+                        <p>No images available for this PG.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Amenities Section -->
+        {% if amenities %}
+        <div class="mb-5">
+            <h3>Amenities</h3>
+            <ul class="amenities-list">
+                {% for amenity in amenities %}
+                <li>{{ amenity }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Filter Section -->
+        <div class="row mb-4">
+            <div class="col-md-6 offset-md-3">
+                <form method="get" class="form-inline justify-content-center">
+                    <label for="ac-filter" class="mr-2">Filter by AC Type:</label>
+                    <select id="ac-filter" name="ac_type" class="form-control" onchange="this.form.submit()">
+                        <option value="all" {% if ac_filter == "all" %}selected{% endif %}>All</option>
+                        <option value="AC" {% if ac_filter == "AC" %}selected{% endif %}>AC</option>
+                        <option value="Non-AC" {% if ac_filter == "Non-AC" %}selected{% endif %}>Non-AC</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        <!-- Rooms Section -->
+        <div class="row">
+            {% for room in rooms %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <img class="card-img-top room-image" src="{{ room.image.url }}" alt="Room image">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ room.name }}</h5>
+                        <p class="card-text">{{ room.description }}</p>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge {% if room.ac_type == 'AC' %}bg-primary{% else %}bg-secondary{% endif %}">
+                                {{ room.ac_type }}
+                            </span>
+                            <span class="text-primary fw-bold">₹{{ room.price }}/month</span>
+                        </div>
+                        <p class="card-text">
+                            <strong>Available Beds:</strong> {{ room.bad_qty }}
+                            {% if room.bad_qty > 0 %}
+                                <span class="text-success ms-2">Available</span>
+                            {% else %}
+                                <span class="text-danger ms-2">Not Available</span>
+                            {% endif %}
+                        </p>
+                        
+                        {% comment %} <!-- Rating Section -->
+                        <div class="rating-section mb-3">
+                            <p class="mb-1">
+                                <strong>Rating:</strong> 
+                                {% if room.average_rating > 0 %}
+                                    <span class="text-warning">{{ room.average_rating|floatformat:1 }}</span>
+                                    <small class="text-muted">({{ room.rating_count }} ratings)</small>
+                                {% else %}
+                                    <span class="text-muted">No ratings yet</span>
+                                {% endif %}
+                            </p>
+                            <form method="post" action="{% url 'rate_room' room.id %}" class="rating-form">
+                                {% csrf_token %}
+                                <div class="form-group mb-0">
+                                    <input type="hidden" name="rating" class="rating-value" value="0">
+                                    <div class="stars mb-2">
+                                        {% for i in "12345" %}
+                                        <span class="star" data-value="{{ i }}">&#9733;</span>
+                                        {% endfor %}
+                                    </div>
+                                    <button type="submit" class="btn btn-sm btn-warning">Rate This Room</button>
+                                </div>
+                            </form>
+                        </div> {% endcomment %}
+                        
+                        {% comment %} <a href="#" class="btn btn-primary mt-2">Book Now</a> {% endcomment %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Gallery Modal -->
+    <div class="modal fade" id="galleryModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ pgname }} Gallery</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalGalleryImg" class="modal-gallery-img" src="" alt="">
+                    <div class="thumbnail-container">
+                        {% for image in pg_images %}
+                        <img src="{{ image.image.url }}" class="thumbnail-img" 
+                             onclick="changeGalleryImage(this, '{{ image.image.url }}')"
+                             {% if forloop.first %}class="active"{% endif %}>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center py-3">
+            <p class="mb-0">&copy; 2025 ZALA BROTHERS. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Star rating functionality
+        document.querySelectorAll('.stars').forEach(starContainer => {
+            const stars = starContainer.querySelectorAll('.star');
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const ratingValue = star.getAttribute('data-value');
+                    const ratingInput = starContainer.previousElementSibling;
+                    
+                    ratingInput.value = ratingValue;
+                    stars.forEach(s => {
+                        s.classList.remove('selected');
+                    });
+                    for (let i = 0; i < ratingValue; i++) {
+                        stars[i].classList.add('selected');
+                    }
+                });
+            });
+        });
+
+        // Gallery Modal functionality
+        function openGallery(index) {
+            const images = document.querySelectorAll('.thumbnail-img');
+            if (images.length > 0) {
+                changeGalleryImage(images[index], images[index].src);
+                images.forEach(img => img.classList.remove('active'));
+                images[index].classList.add('active');
+            }
+        }
+        
+        function changeGalleryImage(element, src) {
+            document.getElementById('modalGalleryImg').src = src;
+            document.querySelectorAll('.thumbnail-img').forEach(img => {
+                img.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        // Initialize Bootstrap tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% endblock %}

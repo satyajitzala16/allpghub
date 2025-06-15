@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Weekly Meal Plan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 40px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+        }
+        img {
+            width: 100px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Weekly Meal Plan for PG: {{ weekly_meal_plan.get_pg_name }}</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Meal Type</th>
+                <th>Food Menu</th>
+                <th>Drink</th>
+                <th>Food Image</th>
+                <th>Drink Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for breakfast in weekly_meal_plan.breakfast.all %}
+            <tr>
+                <td>{{ breakfast.day }}</td>
+                <td>Breakfast</td>
+                <td>{{ breakfast.food_menu }}</td>
+                <td>{{ breakfast.drink }}</td>
+                <td>
+                    {% if breakfast.food_image %}
+                        <img src="{{ breakfast.food_image.url }}" alt="Breakfast Food">
+                    {% else %}
+                        No image available
+                    {% endif %}
+                </td>
+                <td>
+                    {% if breakfast.drink_image %}
+                        <img src="{{ breakfast.drink_image.url }}" alt="Breakfast Drink">
+                    {% else %}
+                        No image available
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+
+            {% for lunch in weekly_meal_plan.lunch.all %}
+            <tr>
+                <td>{{ lunch.day }}</td>
+                <td>Lunch</td>
+                <td>{{ lunch.food_menu }}</td>
+                <td>{{ lunch.drink }}</td>
+                <td>
+                    {% if lunch.food_image %}
+                        <img src="{{ lunch.food_image.url }}" alt="Lunch Food">
+                    {% else %}
+                        No image available
+                    {% endif %}
+                </td>
+                <td>
+                    {% if lunch.drink_image %}
+                        <img src="{{ lunch.drink_image.url }}" alt="Lunch Drink">
+                    {% else %}
+                        No image available
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+
+            {% for dinner in weekly_meal_plan.dinner.all %}
+            <tr>
+                <td>{{ dinner.day }}</td>
+                <td>Dinner</td>
+                <td>{{ dinner.food_menu }}</td>
+                <td>{{ dinner.drink }}</td>
+                <td>
+                    {% if dinner.food_image %}
+                        <img src="{{ dinner.food_image.url }}" alt="Dinner Food">
+                    {% else %}
+                        No image available
+                    {% endif %}
+                </td>
+                <td>
+                    {% if dinner.drink_image %}
+                        <img src="{{ dinner.drink_image.url }}" alt="Dinner Drink">
+                    {% else %}
+                        No image available
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

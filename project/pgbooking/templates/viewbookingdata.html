@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Booking Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        img {
+            max-width: 100px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .no-data {
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Booking Data</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Location</th>
+                <th>Gender</th>
+                <th>About</th>
+                <th>Room Type</th>
+                <th>Aadhaar Photo</th>
+                <th>Personal Photo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for profile in profiles %}
+            <tr>
+                <td>{{ profile.full_name }}</td>
+                <td>{{ profile.email }}</td>
+                <td>{{ profile.phone_number }}</td>
+                <td>{{ profile.location }}</td>
+                <td>{{ profile.gender }}</td>
+                <td>{{ profile.about }}</td>
+                <td>{{ profile.room_type }}</td>
+                <td>
+                    {% if profile.aadhaar_photo %}
+                        <img src="{{ profile.aadhaar_photo.url }}" alt="Aadhaar Photo">
+                    {% else %}
+                        No Aadhaar Photo Uploaded
+                    {% endif %}
+                </td>
+                <td>
+                    {% if profile.personal_photo %}
+                        <img src="{{ profile.personal_photo.url }}" alt="Personal Photo">
+                    {% else %}
+                        No Personal Photo Uploaded
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="no-data">No booking data available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
