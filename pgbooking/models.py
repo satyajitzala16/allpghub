@@ -124,6 +124,10 @@ class ownerregistration(models.Model):
     approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     auto_delete_time = models.DateTimeField(default=timezone.now() + timedelta(hours=72))  # 72 hours from creation
+    securityquestion1 = models.CharField(max_length=200, blank=True)
+    securityanswer1 = models.CharField(max_length=200, blank=True)
+    securityquestion2 = models.CharField(max_length=200, blank=True)
+    securityanswer2 = models.CharField(max_length=200, blank=True)
 
     #auto_delete_time = models.DateTimeField(default=lambda: timezone.now() + timedelta(hours=72))
  

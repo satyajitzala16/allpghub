@@ -1,5 +1,5 @@
 from django.urls import path,include
-from .views import index,register,about_us,contact_us,catpro,submit_feedback,get_pg_images, delete_pg_image,allroom,booking,admin,forget,prodetails,city,pgarea,register_owner,loginsel,owner,owner_login,admin_login,add_pg,addroom,profile,update,view_pg_data,view_data,view_room_data,view_booking_data,add_food,success_page,view_weekly_meal_plan,forgot_password,pg_list_view,upload_pg_images
+from .views import index,register,about_us,contact_us,catpro,owner_security_questions,submit_feedback,get_pg_images, delete_pg_image,allroom,booking,admin,forget,prodetails,city,pgarea,register_owner,loginsel,owner,owner_login,admin_login,add_pg,addroom,profile,update,view_pg_data,view_data,view_room_data,view_booking_data,add_food,success_page,view_weekly_meal_plan,forgot_password,pg_list_view,upload_pg_images
 from .import views
 from django.contrib.auth import views as auth_views
 
@@ -66,6 +66,7 @@ urlpatterns = [
   path('owner/forgot-password/', views.owner_forgot_password, name='owner_forgot_password'),
   path('owner/otp-verify/', views.owner_otp_verify, name='owner_otp_verify'),
   path('owner/change-password/', views.owner_change_password, name='owner_change_password'),
+  path('security-questions/', owner_security_questions, name='owner_security_questions'),
   path('pg-list/', pg_list_view, name='pg_list'),  # Add this line
   # path('payment-success/', views.payment_success, name='payment-success'),
   path('like_pg/<int:pg_id>/', views.like_pg, name='like_pg'),

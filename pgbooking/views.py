@@ -297,7 +297,6 @@ def prodetails(request,id):
         pro = room.objects.get(pk = id)
         return render(request, 'prodetails.html',{'pro':pro})
 
-
 def gender(request, gender):
     # Get all PGs filtered by gender
     pg_list = addpg.objects.filter(gender=gender,approved = True)
@@ -307,8 +306,8 @@ def gender(request, gender):
     return render(request, 'city.html', {'pg_list': pg_list, 'cities': cities, 'gender': gender})
 
 from math import radians, sin, cos, sqrt, atan2
-from django.db.models import Q
 from django.shortcuts import render
+import random
 
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371  # Earth's radius in kilometers
@@ -333,7 +332,7 @@ def city(request, gender):
         if selected_area:
             queryset = queryset.filter(area=selected_area)
             
-            # Get the area coordinates (assuming all PGs in same area have same area coordinates)
+            # Get the area coordinates
             area_pg = queryset.first()
             if area_pg and area_pg.arealatitude and area_pg.arealongitude:
                 area_lat = float(area_pg.arealatitude)
@@ -358,7 +357,7 @@ def city(request, gender):
                     if distance <= radius_km:
                         pg_list.append(pg)
                 else:
-                    # Include PGs without coordinates but with a warning
+                    # Include PGs without coordinates
                     pg.distance = None
                     pg_list.append(pg)
         else:
@@ -376,6 +375,9 @@ def city(request, gender):
     if search_query:
         pg_list = [pg for pg in pg_list if search_query.lower() in pg.pgname.lower()]
     
+    # Shuffle the PG listings randomly
+    random.shuffle(pg_list)
+    
     # Fetch unique cities and areas for dropdowns
     cities = addpg.objects.filter(gender=gender, approved=True).values_list('city', flat=True).distinct().order_by('city')
     areas = addpg.objects.filter(gender=gender, city=selected_city, approved=True).values_list('area', flat=True).distinct().order_by('area')
@@ -391,7 +393,6 @@ def city(request, gender):
         'selected_radius': selected_radius,
     })
 
-
 #exmple
 def pgarea(request, pg_id):
     pg = get_object_or_404(addpg, id=pg_id)
@@ -399,6 +400,8 @@ def pgarea(request, pg_id):
 
     # return render(request,'pgarea.html')
 
+
+# owner register form
 
 # owner register form
 def register_owner(request):
@@ -409,6 +412,10 @@ def register_owner(request):
         password = request.POST.get('password')
         address = request.POST.get('add')
         personal_photo = request.FILES.get('personalphoto')
+        securityquestion1 = request.POST.get('security_question1')
+        securityanswer1 = request.POST.get('security_answer1')
+        securityquestion2 = request.POST.get('security_question2')
+        securityanswer2 = request.POST.get('security_answer2')
 
         owner = ownerregistration(
             name=name,
@@ -417,13 +424,16 @@ def register_owner(request):
             password=password,
             address=address,
             personal_photo=personal_photo,
-            approved=False  # Default to not approved
+            securityquestion1=securityquestion1,
+            securityanswer1=securityanswer1.lower(),  # store in lowercase for case-insensitive matching
+            securityquestion2=securityquestion2,
+            securityanswer2=securityanswer2.lower(),
+            approved=False
         )
 
         owner.save()
-        
         messages.success(request, 'Registration submitted successfully. Your account is pending approval.')
-        return redirect('ownerlogin')  # Replace with your redirect URL
+        return redirect('ownerlogin')
     else:
         return render(request, 'register_owner.html')
 
@@ -439,6 +449,7 @@ def approve_owner(request, owner_id):
         return redirect('admin_dashboard')  # Redirect to admin dashboard
 
     return render(request, 'approve_owner.html', {'owner': owner})
+
 
 def admin_dashboard(request):
     if not request.user.is_superuser:
@@ -487,6 +498,75 @@ def owner_login(request):
             return render(request, 'owner_login.html', {'notregstered': "You need to register first."})
     else:
         return render(request, 'owner_login.html')
+    
+# Owner Forgot Password View (email verification)
+def owner_forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            owner = ownerregistration.objects.get(email=email)
+            request.session['reset_email'] = email
+            return redirect('owner_security_questions')
+        except ownerregistration.DoesNotExist:
+            messages.error(request, "Email does not exist")
+            return redirect('owner_forgot_password')
+    return render(request, 'owner_forgot_password.html')
+
+# Security Questions Verification View
+def owner_security_questions(request):
+    email = request.session.get('reset_email')
+    if not email:
+        return redirect('owner_forgot_password')
+    
+    owner = ownerregistration.objects.get(email=email)
+    
+    if request.method == 'POST':
+        answer1 = request.POST.get('answer1', '').lower()
+        answer2 = request.POST.get('answer2', '').lower()
+        
+        if (answer1 == owner.securityanswer1 and 
+            answer2 == owner.securityanswer2):
+            return redirect('owner_change_password')
+        else:
+            messages.error(request, "Incorrect answers to security questions")
+    
+    context = {
+        'question1': owner.securityquestion1,
+        'question2': owner.securityquestion2,
+        'email': email
+    }
+    return render(request, 'owner_security_questions.html', context)
+
+# Owner Change Password View
+def owner_change_password(request):
+    email = request.session.get('reset_email')
+    if not email:
+        return redirect('owner_forgot_password')
+    
+    if request.method == 'POST':
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if new_password != confirm_password:
+            messages.error(request, "Passwords don't match")
+            return redirect('owner_change_password')
+        
+        try:
+            owner = ownerregistration.objects.get(email=email)
+            owner.password = new_password
+            owner.save()
+            
+            # Clear the session
+            if 'reset_email' in request.session:
+                del request.session['reset_email']
+            
+            messages.success(request, "Password changed successfully")
+            return redirect('ownerlogin')
+        except ownerregistration.DoesNotExist:
+            messages.error(request, "An error occurred")
+            return redirect('owner_change_password')
+    
+    return render(request, 'owner_change_password.html')    
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -739,53 +819,45 @@ def upload_success(request):
     return render(request, 'upload_success.html')
         
 #user profile
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import ownerregistration
+from django.utils import timezone
+from datetime import timedelta
+
 def profile(request):
-    if 'email' in request.session:
-        email = request.session['email']
-        
-        # Check if the email belongs to a registered user
-        try:
-            userdetails = userregister.objects.get(email=email)
-            is_owner = False
-        except userregister.DoesNotExist:
-            userdetails = None
-
-        # Check if the email belongs to a registered owner if not a user
-        if not userdetails:
-            try:
-                userdetails = ownerregistration.objects.get(email=email)
-                is_owner = True
-            except ownerregistration.DoesNotExist:
-                return redirect('login')
-
-        # Fetch user booking details only for users (not owners)
-        booking_details = None
-        if not is_owner:
-            booking_details = UserProfile.objects.filter(email=email)  # Adjust as per your Booking model
-
-        if request.method == 'POST':
-            # Update user details based on form submission
-            userdetails.name = request.POST['name']
-            userdetails.mob = request.POST.get('phone', userdetails.mob) if not is_owner else request.POST.get('phone', userdetails.phone_number)
-            userdetails.add = request.POST.get('address', userdetails.add) if not is_owner else request.POST.get('address', userdetails.address)
-            userdetails.save()
-
-            return render(request, 'profile.html', {
-                'user': userdetails,
-                'session': True,
-                'is_owner': is_owner,
-                'message': 'Profile updated successfully!',
-                'booking_details': booking_details  # Pass booking details to the template
-            })
-        else:
-            return render(request, 'profile.html', {
-                'user': userdetails,
-                'session': True,
-                'is_owner': is_owner,
-                'booking_details': booking_details  # Pass booking details to the template
-            })
-    else:
+    if 'email' not in request.session:
         return redirect('login')
+
+    try:
+        owner = ownerregistration.objects.get(email=request.session['email'])
+    except ownerregistration.DoesNotExist:
+        messages.error(request, "Owner profile not found.")
+        return redirect('login')
+
+    if request.method == 'POST':
+        # Update owner details
+        owner.name = request.POST.get('name', owner.name)
+        owner.phone_number = request.POST.get('phone', owner.phone_number)
+        owner.address = request.POST.get('address', owner.address)
+        
+        # Handle profile photo upload
+        if 'photo' in request.FILES:
+            owner.personal_photo = request.FILES['photo']
+        
+        try:
+            owner.save()
+            messages.success(request, 'Profile updated successfully!')
+        except Exception as e:
+            messages.error(request, f'Error updating profile: {str(e)}')
+
+        return redirect('profile')
+
+    context = {
+        'owner': owner,
+        'session': True,
+    }
+    return render(request, 'profile.html', context)
     
 
 #user profile update
@@ -802,6 +874,7 @@ def update(request):
             return render(request,'update.html',{'author':authordata})
     except Exception as e:
             return render(request,'update.html')    
+    
 
 
 def view_data(request):
@@ -1086,29 +1159,6 @@ def change_password(request):
 
 
 # Owner Forgot Password View
-def owner_forgot_password(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        try:
-            # Check if the email exists in the ownerregistration model
-            owner = ownerregistration.objects.get(email=email)
-            otp = random.randint(1000, 9999)  # Generate a 4-digit OTP
-            request.session['otp'] = otp  # Store OTP in session
-            request.session['email'] = email  # Store email in session
-            
-            # Send OTP via email
-            send_mail(
-                'Password Reset OTP',
-                f'Your OTP is: {otp}',
-                'allpghub@gmail.com',
-                [email],
-                fail_silently=False,
-            )
-            return redirect('owner_otp_verify')  # Redirect to OTP verification page
-        except ownerregistration.DoesNotExist:
-            messages.error(request, "Email does not exist")
-            return redirect('owner_forgot_password')
-    return render(request, 'owner_forgot_password.html')
 
 # Owner OTP Verify View
 def owner_otp_verify(request):
@@ -1125,24 +1175,7 @@ def owner_otp_verify(request):
     return render(request, 'owner_otp_verify.html')
 
 # Owner Change Password View
-def owner_change_password(request):
-    if request.method == 'POST':
-        new_password = request.POST.get('new_password')
-        email = request.session.get('email')  # Retrieve email from session
-        
-        try:
-            # Retrieve the owner using the stored email in the session
-            owner = ownerregistration.objects.get(email=email)
-            owner.password = new_password
-            owner.save()  # Save the changes to the database
-            
-            messages.success(request, "Password changed successfully")
-            return redirect('ownerlogin')  # Redirect to login page after success
-        except ownerregistration.DoesNotExist:
-            messages.error(request, "An error occurred")
-            return redirect('owner_change_password')
-    
-    return render(request, 'owner_change_password.html')
+
 
 
 #ajay sir task

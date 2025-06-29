@@ -47,7 +47,7 @@ class citytablepro(admin.ModelAdmin):
 admin.site.register(citytable,citytablepro)
 
 class ownerregistrationpro(admin.ModelAdmin):
-    list_display = ('name', 'email', 'phone_number', 'address', 'personal_photo', 'approved', 'approve_action')
+    list_display = ('name', 'email', 'phone_number', 'address', 'personal_photo', 'approved', 'approve_action','securityquestion1','securityanswer1','securityquestion2','securityanswer2')
     actions = ['approve_selected']
 
     def approve_action(self, obj):
