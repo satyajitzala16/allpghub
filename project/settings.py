@@ -11,10 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(_file_).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,7 +25,7 @@ SECRET_KEY = 'django-insecure-eqt0^^=v*-e*b$@4!x)9kpqgr2g!c@e@pqpvox-$1s1u4o*g!y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['allpghub.com', 'www.allpghub.com', '13.53.127.163']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -124,7 +123,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'pgbooking/static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -139,6 +139,8 @@ MEDIA_ROOT =  os.path.join(BASE_DIR,'media')
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
